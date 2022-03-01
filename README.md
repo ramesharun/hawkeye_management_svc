@@ -1,5 +1,3 @@
-# hawkeye_management_svc
-Hawkeye Management Service
 
 # Hawkeye Management Service (Utility Service)
 
