@@ -16,6 +16,8 @@ func RegisterHandlers(r *routing.RouteGroup, service Service, authHandler routin
 	r.Get("/monitors/<id>", res.get)
 	r.Get("/monitors", res.query)
 	r.Get("/monitorscount", res.count)
+	r.Get("/orgmonitorscount/<org_id>", res.countbyorg)
+	r.Get("/tenantmonitorscount/<tenant>", res.countbytenant)
 	r.Get("/monitors/org/<org_id>", res.getbyorg)
 	r.Get("/monitors/tenant/<tenant>", res.getbytenant)
 
@@ -73,6 +75,24 @@ func (r resource) getbytenant(c *routing.Context) error {
 
 func (r resource) count(c *routing.Context) error {
 	monitor, err := r.service.Count(c.Request.Context())
+	if err != nil {
+		return err
+	}
+
+	return c.Write(monitor)
+}
+
+func (r resource) countbyorg(c *routing.Context) error {
+	monitor, err := r.service.CountByOrg(c.Request.Context(), c.Param("org_id"))
+	if err != nil {
+		return err
+	}
+
+	return c.Write(monitor)
+}
+
+func (r resource) countbytenant(c *routing.Context) error {
+	monitor, err := r.service.CountByTenant(c.Request.Context(), c.Param("tenant"))
 	if err != nil {
 		return err
 	}

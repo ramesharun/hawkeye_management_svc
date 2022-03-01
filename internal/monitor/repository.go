@@ -19,7 +19,13 @@ type Repository interface {
 	GetByTenant(ctx context.Context, tenant string, offset, limit int) ([]entity.Apichecks, error)
 	// Count returns the number of monitors.
 	Count(ctx context.Context) (int, error)
+	// Count returns the number of monitors.
+	CountByOrg(ctx context.Context, org_id string) (int, error)
+
+	// Count returns the number of monitors.
+	CountByTenant(ctx context.Context, tenant string) (int, error)
 	// Query returns the list of monitors with the given offset and limit.
+
 	Query(ctx context.Context, offset, limit int) ([]entity.Apichecks, error)
 	// Create saves a new monitor in the storage.
 	Create(ctx context.Context, monitor entity.Apichecks) error
@@ -71,6 +77,20 @@ func (r repository) Delete(ctx context.Context, id string) error {
 func (r repository) Count(ctx context.Context) (int, error) {
 	var count int
 	err := r.db.With(ctx).Select("COUNT(*)").From("hawkeye.apichecks").Row(&count)
+	return count, err
+}
+
+// Count returns the number of the monitor records in the database.
+func (r repository) CountByOrg(ctx context.Context, org_id string) (int, error) {
+	var count int
+	err := r.db.With(ctx).Select("COUNT(*)").From("hawkeye.apichecks").Where(dbx.HashExp{"org_id": org_id}).Row(&count)
+	return count, err
+}
+
+// Count returns the number of the monitor records in the database.
+func (r repository) CountByTenant(ctx context.Context, tenant string) (int, error) {
+	var count int
+	err := r.db.With(ctx).Select("COUNT(*)").From("hawkeye.apichecks").Where(dbx.HashExp{"tenant": tenant}).Row(&count)
 	return count, err
 }
 

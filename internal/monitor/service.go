@@ -17,6 +17,8 @@ type Service interface {
 	GetByTenant(ctx context.Context, tenant string, offset, limit int) ([]Monitor, error)
 	Query(ctx context.Context, offset, limit int) ([]Monitor, error)
 	Count(ctx context.Context) (int, error)
+	CountByOrg(ctx context.Context, org_id string) (int, error)
+	CountByTenant(ctx context.Context, tenant string) (int, error)
 	Create(ctx context.Context, input CreateMonitorRequest) (Monitor, error)
 	Update(ctx context.Context, id string, input UpdateMonitorRequest) (Monitor, error)
 	Delete(ctx context.Context, id string) (Monitor, error)
@@ -122,6 +124,16 @@ func (s service) Delete(ctx context.Context, id string) (Monitor, error) {
 // Count returns the number of monitors.
 func (s service) Count(ctx context.Context) (int, error) {
 	return s.repo.Count(ctx)
+}
+
+// Count returns the number of monitors.
+func (s service) CountByOrg(ctx context.Context, org_id string) (int, error) {
+	return s.repo.CountByOrg(ctx, org_id)
+}
+
+// Count returns the number of monitors.
+func (s service) CountByTenant(ctx context.Context, tenant string) (int, error) {
+	return s.repo.CountByTenant(ctx, tenant)
 }
 
 // Query returns the monitors with the specified offset and limit.
